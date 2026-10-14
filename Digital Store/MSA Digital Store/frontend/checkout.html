@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <link rel="icon" type="image/png" href="images/Logo.png" />
+<title>Checkout | MSA Digital Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="site-header-mount"></div>
+  <main class="page">
+    <div class="container" id="checkout-root">
+      <h1 class="page-title">Checkout</h1>
+      <p class="muted" style="margin-bottom:1.5rem">Complete your order details for delivery across Quaidabad & Khushab</p>
+      <div id="checkout-msg"></div>
+      <form id="checkout-form" class="checkout-layout">
+        <div>
+          <div class="form-card">
+            <h2 class="font-display" style="margin-top:0">Delivery Details</h2>
+            <div class="form-grid">
+              <div class="full"><label>Customer Name *</label><input name="customer_name" required placeholder="Full name" /></div>
+              <div><label>Phone Number *</label><input name="phone" required placeholder="03XX XXXXXXX" /></div>
+              <div><label>Email (optional)</label><input name="email" type="email" placeholder="you@email.com" /></div>
+              <div class="full"><label>Complete Address *</label><textarea name="address" rows="3" required placeholder="House / street / landmark"></textarea></div>
+              <div><label>City / Tehsil *</label><input name="city" required value="Quaidabad" /></div>
+              <div><label>District *</label><input name="district" required value="Khushab" /></div>
+              <div class="full"><label>Notes</label><input name="notes" placeholder="Optional delivery notes" /></div>
+            </div>
+          </div>
+          <div class="form-card" style="margin-top:1rem">
+            <h2 class="font-display" style="margin-top:0">Payment Method</h2>
+            <label class="pay-option selected"><input type="radio" name="payment_method" value="Cash on Delivery" checked /> <span><strong>Cash on Delivery</strong><br/><span class="muted" style="font-size:0.78rem">Pay when your order arrives</span></span></label>
+            <label class="pay-option"><input type="radio" name="payment_method" value="Bank Transfer" /> <span><strong>Bank Transfer</strong><br/><span class="muted" style="font-size:0.78rem">Transfer to MSA bank account</span></span></label>
+            <label class="pay-option"><input type="radio" name="payment_method" value="Easypaisa / JazzCash" /> <span><strong>Easypaisa / JazzCash</strong><br/><span class="muted" style="font-size:0.78rem">Mobile wallet (coming soon)</span></span></label>
+          </div>
+        </div>
+        <aside>
+          <div class="summary-card" id="checkout-summary"></div>
+          <button class="btn btn-teal" type="submit" style="width:100%;margin-top:1rem">Place Order</button>
+        </aside>
+      </form>
+    </div>
+  </main>
+  <div id="site-footer-mount"></div>
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/checkout.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRM — Online Restaurant</title>
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <link rel="stylesheet" href="../../assets/css/dashboard.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script src="../../assets/js/api.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/dashboard.js"></script>
+  <script>
+    (async function () {
+      const content = ORDashboard.renderShell({ title: "CRM notes" });
+      if (!content) return;
+      try {
+        const notes = await ORApi.get("/crm/notes");
+        content.innerHTML = `
+          <section class="card">
+            <div class="card-header">
+              <strong>Notes & complaints</strong>
+              <span class="muted">Marketing campaigns placeholder ready</span>
+            </div>
+            <div class="card-body">
+              ${
+                notes.length
+                  ? notes
+                      .map(
+                        (n) => `
+                <div style="padding:1rem 0;border-bottom:1px solid var(--border);">
+                  <div class="flex-between">
+                    <strong>${n.title || n.note_type}</strong>
+                    ${n.is_complaint ? '<span class="badge badge-cancelled">Complaint</span>' : '<span class="badge badge-confirmed">Note</span>'}
+                  </div>
+                  <p class="muted" style="margin:.35rem 0 0;">${n.body}</p>
+                </div>`
+                      )
+                      .join("")
+                  : `<div class="empty-state"><h3>No CRM notes yet</h3><p>Add notes from customer profiles as conversations happen.</p></div>`
+              }
+            </div>
+          </section>
+        `;
+      } catch (err) {
+        content.innerHTML = `<div class="alert alert-error">${err.message}</div>`;
+      }
+    })();
+  </script>
+</body>
+</html>

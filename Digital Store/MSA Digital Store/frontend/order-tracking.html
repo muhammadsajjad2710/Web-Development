@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <link rel="icon" type="image/png" href="images/Logo.png" />
+<title>Track Order | MSA Digital Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="site-header-mount"></div>
+  <main class="page">
+    <div class="container" style="max-width:760px">
+      <div style="text-align:center;margin-bottom:1.75rem">
+        <p class="eyebrow">Orders</p>
+        <h1 class="page-title">Track Your Order</h1>
+        <p class="muted">Follow your order from placement to delivery</p>
+      </div>
+      <form id="track-form" class="form-card" style="display:flex;gap:0.75rem;flex-wrap:wrap">
+        <div style="flex:1;min-width:200px">
+          <label>Enter Order ID</label>
+          <input name="order_number" required placeholder="e.g. MSA-48291037" />
+        </div>
+        <div style="align-self:end"><button class="btn btn-navy" type="submit">Track Order</button></div>
+      </form>
+      <div id="track-result" style="margin-top:1.5rem"></div>
+    </div>
+  </main>
+  <div id="site-footer-mount"></div>
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/checkout.js"></script>
+</body>
+</html>
+

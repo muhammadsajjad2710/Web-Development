@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <link rel="icon" type="image/png" href="images/Logo.png" />
+<title>Products | MSA Digital Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="site-header-mount"></div>
+  <main class="page">
+    <div class="container">
+      <p class="eyebrow">Catalogue</p>
+      <h1 class="page-title" id="listing-title">All Products</h1>
+      <p class="muted" id="listing-count">Loadingâ€¦</p>
+      <div class="layout-2" style="margin-top:1.5rem">
+        <aside class="sidebar-box">
+          <h3>Categories</h3>
+          <ul class="filter-list" id="category-filters"></ul>
+        </aside>
+        <div>
+          <div style="display:flex;justify-content:space-between;gap:1rem;margin-bottom:1rem;flex-wrap:wrap">
+            <p class="muted">Marketplace listings with stock & seller badges</p>
+            <select id="sort-select">
+              <option value="featured">Featured</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="rating">Top Rated</option>
+            </select>
+          </div>
+          <div class="product-grid" id="products-grid"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div id="site-footer-mount"></div>
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/products.js"></script>
+</body>
+</html>
+

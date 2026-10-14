@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subscription — Online Restaurant</title>
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <link rel="stylesheet" href="../../assets/css/dashboard.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script src="../../assets/js/api.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/dashboard.js"></script>
+  <script>
+    (async function () {
+      const content = ORDashboard.renderShell({ title: "Subscription" });
+      if (!content) return;
+      try {
+        const [sub, plans] = await Promise.all([
+          ORApi.get("/subscriptions/me"),
+          ORApi.get("/subscriptions/plans"),
+        ]);
+        content.innerHTML = `
+          <div class="card mb-2">
+            <div class="card-body">
+              <div class="flex-between" style="flex-wrap:wrap;gap:1rem;">
+                <div>
+                  <h2 style="margin:0;">${sub.plan.display_name}</h2>
+                  <div class="mt-1">${ORUI.statusBadge(sub.status)} · ${sub.billing_cycle}</div>
+                  ${sub.trial_end ? `<p class="muted">Trial ends ${new Date(sub.trial_end).toLocaleDateString()}</p>` : ""}
+                </div>
+                <div class="text-right">
+                  <div class="muted">Monthly</div>
+                  <strong style="font-size:1.4rem;">${ORUI.formatPKR(sub.plan.price_monthly)}</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="stats-grid">
+            ${plans
+              .map(
+                (p) => `<div class="stat-card">
+                <div class="label">${p.display_name}</div>
+                <div class="value" style="font-size:1.25rem;">${ORUI.formatPKR(p.price_monthly)}</div>
+                <div class="delta">${p.max_branches} branches · ${p.max_staff} staff</div>
+              </div>`
+              )
+              .join("")}
+          </div>
+        `;
+      } catch (err) {
+        content.innerHTML = `<div class="alert alert-error">${err.message}</div>`;
+      }
+    })();
+  </script>
+</body>
+</html>

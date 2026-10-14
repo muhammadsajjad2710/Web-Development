@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Products - Electric Store{% endblock %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+  <div>
+    <h2><i class="bi bi-box-seam"></i> Products</h2>
+    <p class="text-muted mb-0">Manage inventory and pricing</p>
+  </div>
+  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#productModal" id="addProductBtn">
+    <i class="bi bi-plus-lg"></i> Add Product
+  </button>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body table-responsive">
+    <table class="table table-hover align-middle" id="productsTable">
+      <thead class="table-light">
+        <tr>
+          <th>Image</th>
+          <th>Product</th>
+          <th>Qty</th>
+          <th>Purchase</th>
+          <th>Sale</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal fade" id="productModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="productForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="productModalTitle">Add Product</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="productId">
+          <div class="mb-3">
+            <label class="form-label">Product Name</label>
+            <input type="text" class="form-control" id="productName" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" id="productDesc" rows="2"></textarea>
+          </div>
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label class="form-label">Quantity</label>
+              <input type="number" class="form-control" id="productQty" min="0" value="0">
+            </div>
+            <div class="col-6 mb-3">
+              <label class="form-label">Low Stock Alert</label>
+              <input type="number" class="form-control" id="productThreshold" min="1" value="3">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label class="form-label">Purchase Price (Rs.)</label>
+              <input type="number" class="form-control" id="productPurchase" min="0" step="0.01" required>
+            </div>
+            <div class="col-6 mb-3">
+              <label class="form-label">Sale Price (Rs.)</label>
+              <input type="number" class="form-control" id="productSale" min="0" step="0.01" required>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Product Image</label>
+            <input type="file" class="form-control" id="productImage" accept="image/*">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="/static/js/products.js"></script>
+{% endblock %}

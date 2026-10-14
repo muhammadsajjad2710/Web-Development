@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register restaurant — Online Restaurant</title>
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <link rel="stylesheet" href="../../assets/css/auth.css" />
+</head>
+<body>
+  <div class="auth-page">
+    <aside class="auth-visual">
+      <a class="brand" href="../../index.html" style="color:#fff;">
+        <span class="brand-mark">OR</span>
+        Online Restaurant
+      </a>
+      <div>
+        <h1>Launch your restaurant online in minutes</h1>
+        <p>15-day free trial. Multi-branch ready. PKR pricing. Role-based staff access included.</p>
+      </div>
+      <p style="position:relative;z-index:1;opacity:.7;font-size:.85rem;">MSA Technologies</p>
+    </aside>
+    <main class="auth-panel">
+      <div class="auth-card" style="width:min(480px,100%);">
+        <h2>Register your restaurant</h2>
+        <p class="subtitle">Create owner account + restaurant profile</p>
+        <div id="alert" class="alert alert-error hidden"></div>
+        <form id="register-form">
+          <div class="form-group">
+            <label class="form-label" for="restaurant_name">Restaurant name</label>
+            <input class="form-control" id="restaurant_name" required placeholder="e.g. Karachi Grill House" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="full_name">Owner full name</label>
+            <input class="form-control" id="full_name" required placeholder="Your name" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="email">Work email</label>
+            <input class="form-control" id="email" type="email" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="phone">Phone / WhatsApp</label>
+            <input class="form-control" id="phone" placeholder="+92-3XX-XXXXXXX" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="city">City</label>
+            <input class="form-control" id="city" value="Lahore" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <input class="form-control" id="password" type="password" minlength="8" required />
+            <div class="form-hint">At least 8 characters with a letter and a digit</div>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit" id="submit-btn">Create account</button>
+        </form>
+        <div class="auth-footer">
+          Already registered? <a href="login.html">Sign in</a>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="../../assets/js/api.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script>
+    document.getElementById("register-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const alertEl = document.getElementById("alert");
+      const btn = document.getElementById("submit-btn");
+      alertEl.classList.add("hidden");
+      ORUI.setLoading(btn, true);
+      try {
+        await ORApi.registerRestaurant({
+          restaurant_name: document.getElementById("restaurant_name").value.trim(),
+          full_name: document.getElementById("full_name").value.trim(),
+          email: document.getElementById("email").value.trim(),
+          phone: document.getElementById("phone").value.trim() || null,
+          city: document.getElementById("city").value.trim() || "Lahore",
+          country: "Pakistan",
+          password: document.getElementById("password").value,
+          contact_number: document.getElementById("phone").value.trim() || null,
+          whatsapp_number: document.getElementById("phone").value.trim() || null,
+        });
+        ORUI.toast("Restaurant registered — welcome!", "success");
+        window.location.href = "../dashboard/index.html";
+      } catch (err) {
+        alertEl.textContent = err.message;
+        alertEl.classList.remove("hidden");
+      } finally {
+        ORUI.setLoading(btn, false);
+      }
+    });
+  </script>
+</body>
+</html>

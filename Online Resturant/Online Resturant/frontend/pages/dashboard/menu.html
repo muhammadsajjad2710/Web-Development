@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Menu — Online Restaurant</title>
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <link rel="stylesheet" href="../../assets/css/dashboard.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script src="../../assets/js/api.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/dashboard.js"></script>
+  <script>
+    (async function () {
+      const content = ORDashboard.renderShell({ title: "Menu" });
+      if (!content) return;
+      try {
+        const [categories, items] = await Promise.all([
+          ORApi.get("/menu/categories"),
+          ORApi.get("/menu/items"),
+        ]);
+        content.innerHTML = `
+          <div class="grid-2">
+            <section class="card">
+              <div class="card-header"><strong>Categories</strong></div>
+              <div class="card-body" style="padding:0;">
+                <table class="data">
+                  <thead><tr><th>Name</th><th>Status</th></tr></thead>
+                  <tbody>
+                    ${categories.map((c) => `<tr><td>${c.name}</td><td>${c.is_active ? ORUI.statusBadge("active") : "inactive"}</td></tr>`).join("") || `<tr><td colspan="2"><div class="empty-state">No categories</div></td></tr>`}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section class="card">
+              <div class="card-header">
+                <strong>Menu items</strong>
+                <span class="muted">${items.length} items</span>
+              </div>
+              <div class="card-body" style="padding:0;">
+                <table class="data">
+                  <thead><tr><th>Item</th><th>Price</th><th>Flags</th></tr></thead>
+                  <tbody>
+                    ${items
+                      .map(
+                        (i) => `<tr>
+                        <td><strong>${i.name}</strong><div class="muted" style="font-size:.8rem;">${i.description || ""}</div></td>
+                        <td>${ORUI.formatPKR(i.discount_price || i.price)}${i.discount_price ? ` <span class="muted" style="text-decoration:line-through;font-size:.8rem;">${ORUI.formatPKR(i.price)}</span>` : ""}</td>
+                        <td>${i.is_popular ? '<span class="badge badge-trial">Popular</span> ' : ""}${i.is_featured ? '<span class="badge badge-confirmed">Featured</span>' : ""}</td>
+                      </tr>`
+                      )
+                      .join("") || `<tr><td colspan="3"><div class="empty-state">No items</div></td></tr>`}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        `;
+      } catch (err) {
+        content.innerHTML = `<div class="alert alert-error">${err.message}</div>`;
+      }
+    })();
+  </script>
+</body>
+</html>

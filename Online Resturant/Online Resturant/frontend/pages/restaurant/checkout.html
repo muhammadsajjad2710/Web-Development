@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout — Online Restaurant</title>
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <link rel="stylesheet" href="../../assets/css/landing.css" />
+  <link rel="stylesheet" href="../../assets/css/restaurant.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container site-nav">
+      <a class="brand" id="back" href="#"><span class="brand-mark">OR</span> Checkout</a>
+    </div>
+  </header>
+  <main class="container" style="padding:2rem 0 4rem;max-width:720px;">
+    <h1>Checkout</h1>
+    <div id="alert" class="alert alert-error hidden"></div>
+    <form id="checkout-form" class="card mt-2">
+      <div class="card-body">
+        <div class="form-group">
+          <label class="form-label">Full name</label>
+          <input class="form-control" id="customer_name" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input class="form-control" id="customer_phone" required placeholder="+92-3XX-XXXXXXX" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email (optional)</label>
+          <input class="form-control" id="customer_email" type="email" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Order type</label>
+          <select class="form-control" id="order_type">
+            <option value="delivery">Delivery</option>
+            <option value="pickup">Pickup</option>
+          </select>
+        </div>
+        <div class="form-group" id="address-group">
+          <label class="form-label">Delivery address</label>
+          <textarea class="form-control" id="delivery_address" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Special instructions</label>
+          <textarea class="form-control" id="special_instructions" rows="2"></textarea>
+        </div>
+        <p class="muted" id="summary"></p>
+        <button class="btn btn-primary btn-block" type="submit" id="submit-btn">Place order</button>
+      </div>
+    </form>
+  </main>
+  <script src="../../assets/js/api.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/cart.js"></script>
+  <script>
+    const slug = ORCart.getSlug();
+    document.getElementById("back").href = `cart.html?slug=${slug}`;
+    const { items, subtotal, count } = ORCart.totals();
+    if (!count) location.href = `index.html?slug=${slug}`;
+    document.getElementById("summary").textContent = `${count} items · Subtotal ${ORUI.formatPKR(subtotal)} (+ tax & delivery at confirmation)`;
+
+    document.getElementById("order_type").addEventListener("change", (e) => {
+      document.getElementById("address-group").classList.toggle("hidden", e.target.value !== "delivery");
+    });
+
+    document.getElementById("checkout-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const alertEl = document.getElementById("alert");
+      const btn = document.getElementById("submit-btn");
+      alertEl.classList.add("hidden");
+      ORUI.setLoading(btn, true);
+      try {
+        const order = await ORApi.post(
+          `/public/${slug}/orders`,
+          {
+            order_type: document.getElementById("order_type").value,
+            customer_name: document.getElementById("customer_name").value.trim(),
+            customer_phone: document.getElementById("customer_phone").value.trim(),
+            customer_email: document.getElementById("customer_email").value.trim() || null,
+            delivery_address: document.getElementById("delivery_address").value.trim() || null,
+            special_instructions: document.getElementById("special_instructions").value.trim() || null,
+            payment_method: "cod",
+            items: items.map((i) => ({
+              menu_item_id: i.menu_item_id,
+              quantity: i.quantity,
+            })),
+          },
+          { skipAuth: true }
+        );
+        ORCart.clear();
+        location.href = `track.html?order=${encodeURIComponent(order.order_number)}`;
+      } catch (err) {
+        alertEl.textContent = err.message;
+        alertEl.classList.remove("hidden");
+      } finally {
+        ORUI.setLoading(btn, false);
+      }
+    });
+  </script>
+</body>
+</html>

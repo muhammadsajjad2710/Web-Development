@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Products | Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/admin.css" />
+</head>
+<body data-page="products.html">
+  <div class="admin-shell" id="admin-shell">
+    <div class="panel">
+      <div class="panel-head"><h2>Add Product</h2></div>
+      <div id="product-msg"></div>
+      <form id="product-create-form" class="form-grid">
+        <div><label>Name</label><input name="name" required /></div>
+        <div><label>Price (PKR)</label><input name="price" type="number" step="0.01" required /></div>
+        <div><label>Original Price</label><input name="original_price" type="number" step="0.01" /></div>
+        <div><label>Stock</label><input name="stock" type="number" value="10" /></div>
+        <div><label>Category</label><select name="category_id" id="product-form-cats" required></select></div>
+        <div><label>Seller</label><select name="seller_id" id="product-form-sellers" required></select></div>
+        <div>
+          <label>Badge</label>
+          <select name="badge">
+            <option>MSA Product</option>
+            <option selected>Verified Seller</option>
+            <option>Warehouse Available</option>
+          </select>
+        </div>
+        <div><label>Image URL</label><input name="image_url" placeholder="https://..." /></div>
+        <div class="full"><label>Description</label><textarea name="description" rows="2" required></textarea></div>
+        <div class="full"><label>Features (one per line)</label><textarea name="features" rows="3"></textarea></div>
+        <div class="full"><label><input type="checkbox" name="warehouse_available" /> Warehouse available</label></div>
+        <div class="full"><button class="btn btn-teal" type="submit">Create Product</button></div>
+      </form>
+    </div>
+    <div class="panel" style="margin-top:1.25rem">
+      <div class="panel-head"><h2>All Products</h2></div>
+      <table id="products-table">
+        <thead><tr><th>Product</th><th>Category</th><th>Seller</th><th>Price</th><th>Stock</th><th>Badge</th><th>Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  <script src="../js/api.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>

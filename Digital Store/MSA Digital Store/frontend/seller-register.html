@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <link rel="icon" type="image/png" href="images/Logo.png" />
+<title>Become a Seller | MSA Digital Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="site-header-mount"></div>
+  <main class="page">
+    <div class="container" style="max-width:820px">
+      <div style="text-align:center;margin-bottom:1.5rem">
+        <p class="eyebrow">Partners</p>
+        <h1 class="page-title">Become a Seller</h1>
+        <p class="muted">Register your shop or business on MSA Digital Store</p>
+      </div>
+      <div id="seller-msg"></div>
+      <form id="seller-form" class="form-card">
+        <div class="form-grid">
+          <div><label>Business / Shop Name *</label><input name="business_name" required /></div>
+          <div><label>Owner Name *</label><input name="owner_name" required /></div>
+          <div><label>Phone *</label><input name="phone" required /></div>
+          <div><label>Email *</label><input name="email" type="email" required /></div>
+          <div>
+            <label>Business Category *</label>
+            <select name="business_category" required>
+              <option value="">Select category</option>
+              <option>Electronics</option><option>Mobile Accessories</option><option>Fashion</option>
+              <option>Shoes</option><option>Beauty Products</option><option>Groceries</option>
+              <option>Home & Kitchen</option><option>Baby Products</option>
+              <option>Books & Stationery</option><option>Daily Use Items</option>
+              <option>Mixed / General Store</option>
+            </select>
+          </div>
+          <div><label>Account Password (optional)</label><input name="password" type="password" minlength="6" placeholder="Create seller login" /></div>
+          <div class="full"><label>Business Address *</label><textarea name="business_address" rows="3" required></textarea></div>
+          <div><label>City *</label><input name="city" required /></div>
+          <div><label>District *</label><input name="district" required value="Khushab" /></div>
+          <div><label>CNIC (placeholder)</label><input name="cnic" placeholder="XXXXX-XXXXXXX-X" /></div>
+          <div><label>NTN (placeholder)</label><input name="ntn" /></div>
+          <div class="full">
+            <label>Type of Selling *</label>
+            <select name="selling_type" required>
+              <option value="Sell from own shop">Sell from own shop</option>
+              <option value="Store products in MSA warehouse">Store products in MSA warehouse</option>
+              <option value="Both">Both</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-teal" type="submit" style="margin-top:1.25rem">Submit Application</button>
+      </form>
+    </div>
+  </main>
+  <div id="site-footer-mount"></div>
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/checkout.js"></script>
+</body>
+</html>
+

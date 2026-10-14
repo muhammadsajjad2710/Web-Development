@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Restaurant — Online Restaurant</title>
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <link rel="stylesheet" href="../../assets/css/landing.css" />
+  <link rel="stylesheet" href="../../assets/css/restaurant.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container site-nav">
+      <a class="brand" href="../../index.html">
+        <span class="brand-mark">OR</span>
+        <span id="nav-name">Restaurant</span>
+      </a>
+      <div class="nav-actions">
+        <a class="btn btn-ghost btn-sm" href="track.html">Track order</a>
+        <a class="btn btn-primary btn-sm" href="cart.html">Cart (<span id="cart-count">0</span>)</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="rest-hero" id="hero">
+    <div class="container rest-hero-inner">
+      <div class="hero-brand" id="rest-name" style="font-size:clamp(2.2rem,5vw,3.4rem);animation:none;">Loading…</div>
+      <p class="rest-meta" id="rest-meta"></p>
+      <div class="flex gap-1" style="flex-wrap:wrap;">
+        <a class="btn btn-primary" href="#menu" style="background:#fff;color:var(--brand-900);">Browse menu</a>
+        <a class="wa-btn" id="wa-link" href="#" target="_blank" rel="noopener">WhatsApp order</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="container menu-layout" id="menu">
+    <aside class="cat-nav" id="cat-nav"></aside>
+    <div>
+      <h2 class="section-title" style="margin-bottom:1rem;">Digital menu</h2>
+      <div class="menu-grid" id="menu-grid"><div class="spinner"></div></div>
+    </div>
+  </div>
+
+  <button class="cart-fab" id="cart-fab" type="button">Cart · 0</button>
+
+  <div id="modal-root"></div>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div id="footer-contact"></div>
+      <div>Powered by Online Restaurant · MSA Technologies</div>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/api.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/cart.js"></script>
+  <script>
+    const slug = ORCart.getSlug();
+
+    function refreshCartUI() {
+      const { count } = ORCart.totals();
+      document.getElementById("cart-count").textContent = count;
+      document.getElementById("cart-fab").textContent = `Cart · ${count}`;
+    }
+
+    function openItemModal(item) {
+      const root = document.getElementById("modal-root");
+      root.innerHTML = `
+        <div class="modal-backdrop">
+          <div class="modal">
+            <div class="modal-header">
+              <strong>${item.name}</strong>
+              <button class="btn btn-ghost btn-sm" id="close-modal" type="button">✕</button>
+            </div>
+            <div class="modal-body">
+              <p class="muted">${item.description || ""}</p>
+              <div class="price-row mb-2">
+                <span class="price">${ORUI.formatPKR(item.discount_price || item.price)}</span>
+                ${item.discount_price ? `<span class="price-old">${ORUI.formatPKR(item.price)}</span>` : ""}
+              </div>
+              <div class="form-group">
+                <label class="form-label">Quantity</label>
+                <input class="form-control" id="qty" type="number" min="1" value="1" />
+              </div>
+              ${item.spice_level && item.spice_level !== "none" ? `<p class="muted">Spice: ${item.spice_level}</p>` : ""}
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-outline" id="close-modal-2" type="button">Cancel</button>
+              <button class="btn btn-primary" id="add-btn" type="button">Add to cart</button>
+            </div>
+          </div>
+        </div>`;
+      const close = () => (root.innerHTML = "");
+      document.getElementById("close-modal").onclick = close;
+      document.getElementById("close-modal-2").onclick = close;
+      document.getElementById("add-btn").onclick = () => {
+        const qty = Number(document.getElementById("qty").value || 1);
+        ORCart.addItem(item, qty);
+        ORUI.toast(`${item.name} added`, "success");
+        refreshCartUI();
+        close();
+      };
+    }
+
+    (async function () {
+      try {
+        const [restaurant, categories, items] = await Promise.all([
+          ORApi.get(`/restaurants/public/${slug}`, { skipAuth: true }),
+          ORApi.get(`/public/${slug}/categories`, { skipAuth: true }),
+          ORApi.get(`/public/${slug}/items`, { skipAuth: true }),
+        ]);
+        document.title = `${restaurant.name} — Order online`;
+        document.getElementById("nav-name").textContent = restaurant.name;
+        document.getElementById("rest-name").textContent = restaurant.name;
+        document.getElementById("rest-meta").textContent =
+          `${restaurant.cuisine_type || "Restaurant"} · ${restaurant.city || ""} · ${restaurant.currency}`;
+        document.getElementById("footer-contact").textContent =
+          `${restaurant.address || ""} · ${restaurant.contact_number || ""}`;
+        const wa = (restaurant.whatsapp_number || "").replace(/[^\d+]/g, "");
+        document.getElementById("wa-link").href = wa
+          ? `https://wa.me/${wa.replace("+", "")}?text=${encodeURIComponent("Assalamualaikum! I would like to order.")}`
+          : "#";
+
+        const catNav = document.getElementById("cat-nav");
+        catNav.innerHTML =
+          `<a class="cat-link active" href="#menu" data-id="">All</a>` +
+          categories
+            .map((c) => `<a class="cat-link" href="#menu" data-id="${c.id}">${c.name}</a>`)
+            .join("");
+
+        const grid = document.getElementById("menu-grid");
+        function render(filterId) {
+          const list = filterId ? items.filter((i) => i.category_id === filterId) : items;
+          grid.innerHTML = list
+            .map(
+              (item) => `
+            <article class="menu-item-card" data-id="${item.id}">
+              <div class="flex-between">
+                <h3>${item.name}</h3>
+                ${item.is_popular ? '<span class="badge badge-trial">Popular</span>' : ""}
+              </div>
+              <p class="muted" style="margin:0;font-size:.9rem;">${item.description || ""}</p>
+              <div class="price-row">
+                <span class="price">${ORUI.formatPKR(item.discount_price || item.price)}</span>
+                ${item.discount_price ? `<span class="price-old">${ORUI.formatPKR(item.price)}</span>` : ""}
+              </div>
+            </article>`
+            )
+            .join("") || `<div class="empty-state">No items available</div>`;
+          grid.querySelectorAll(".menu-item-card").forEach((el) => {
+            el.addEventListener("click", () => {
+              const item = items.find((i) => i.id === el.dataset.id);
+              if (item) openItemModal(item);
+            });
+          });
+        }
+        render();
+        catNav.querySelectorAll(".cat-link").forEach((link) => {
+          link.addEventListener("click", (e) => {
+            e.preventDefault();
+            catNav.querySelectorAll(".cat-link").forEach((l) => l.classList.remove("active"));
+            link.classList.add("active");
+            render(link.dataset.id || null);
+          });
+        });
+
+        refreshCartUI();
+        document.getElementById("cart-fab").onclick = () => (location.href = "cart.html?slug=" + slug);
+        window.addEventListener("or:cart-updated", refreshCartUI);
+      } catch (err) {
+        document.getElementById("menu-grid").innerHTML =
+          `<div class="alert alert-error">${err.message}. Is the API running on port 8000?</div>`;
+      }
+    })();
+  </script>
+</body>
+</html>

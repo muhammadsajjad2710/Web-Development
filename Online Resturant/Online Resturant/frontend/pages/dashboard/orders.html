@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orders — Online Restaurant</title>
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <link rel="stylesheet" href="../../assets/css/dashboard.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script src="../../assets/js/api.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/dashboard.js"></script>
+  <script>
+    (async function () {
+      const content = ORDashboard.renderShell({ title: "Orders" });
+      if (!content) return;
+      content.innerHTML = `
+        <div class="card mb-2">
+          <div class="card-body flex gap-2" style="flex-wrap:wrap;">
+            <input class="form-control" id="search" placeholder="Search order #, name, phone" style="max-width:280px;" />
+            <select class="form-control" id="status" style="max-width:200px;">
+              <option value="">All statuses</option>
+              <option value="pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="preparing">Preparing</option>
+              <option value="ready_for_pickup">Ready for pickup</option>
+              <option value="out_for_delivery">Out for delivery</option>
+              <option value="delivered">Delivered</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+            <button class="btn btn-primary" id="filter-btn" type="button">Filter</button>
+          </div>
+        </div>
+        <div class="card"><div class="card-body" id="orders-table"><div class="spinner"></div></div></div>
+      `;
+
+      async function load() {
+        const box = document.getElementById("orders-table");
+        box.innerHTML = `<div class="spinner"></div>`;
+        try {
+          const search = document.getElementById("search").value.trim();
+          const status = document.getElementById("status").value;
+          const qs = new URLSearchParams();
+          if (search) qs.set("search", search);
+          if (status) qs.set("status", status);
+          const data = await ORApi.get(`/orders?${qs.toString()}`);
+          if (!data.items?.length) {
+            box.innerHTML = `<div class="empty-state"><h3>No orders found</h3><p>New website and WhatsApp orders will appear here.</p></div>`;
+            return;
+          }
+          box.innerHTML = `
+            <div class="table-wrap">
+              <table class="data">
+                <thead>
+                  <tr>
+                    <th>Order</th><th>Customer</th><th>Type</th><th>Status</th><th>Payment</th><th>Total</th><th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${data.items
+                    .map(
+                      (o) => `<tr>
+                      <td><strong>${o.order_number}</strong><div class="muted" style="font-size:.8rem;">${o.source}</div></td>
+                      <td>${o.customer_name}<div class="muted" style="font-size:.8rem;">${o.customer_phone}</div></td>
+                      <td>${o.order_type}</td>
+                      <td>${ORUI.statusBadge(o.status)}</td>
+                      <td>${o.payment_status}</td>
+                      <td>${ORUI.formatPKR(o.total_amount)}</td>
+                      <td><a href="order-detail.html?id=${o.id}">Details</a></td>
+                    </tr>`
+                    )
+                    .join("")}
+                </tbody>
+              </table>
+            </div>
+            <p class="muted mt-1">Showing ${data.items.length} of ${data.total}</p>
+          `;
+        } catch (err) {
+          box.innerHTML = `<div class="alert alert-error">${err.message}</div>`;
+        }
+      }
+
+      document.getElementById("filter-btn").addEventListener("click", load);
+      load();
+    })();
+  </script>
+</body>
+</html>

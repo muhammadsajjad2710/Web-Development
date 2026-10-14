@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <link rel="icon" type="image/png" href="images/Logo.png" />
+<title>Login | MSA Digital Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="site-header-mount"></div>
+  <main class="page">
+    <div class="container auth-wrap">
+      <div style="text-align:center;margin-bottom:1.25rem">
+        <p class="eyebrow">Account</p>
+        <h1 class="page-title">Customer Login / Register</h1>
+      </div>
+      <div class="tabs">
+        <button type="button" class="active" data-auth-tab="login">Login</button>
+        <button type="button" data-auth-tab="register">Register</button>
+      </div>
+      <div id="auth-msg"></div>
+      <form id="login-form" class="form-card form-grid" style="display:grid">
+        <div class="full"><label>Email</label><input name="email" type="email" required placeholder="customer@msa.local" /></div>
+        <div class="full"><label>Password</label><input name="password" type="password" required placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" /></div>
+        <div class="full"><button class="btn btn-teal" type="submit" style="width:100%">Login</button></div>
+        <p class="full muted" style="font-size:0.78rem;margin:0">Demo: customer@msa.local / customer123</p>
+      </form>
+      <form id="register-form" class="form-card form-grid" style="display:none">
+        <div class="full"><label>Full Name</label><input name="full_name" required /></div>
+        <div class="full"><label>Email</label><input name="email" type="email" required /></div>
+        <div><label>Phone</label><input name="phone" /></div>
+        <div><label>Password</label><input name="password" type="password" required minlength="6" /></div>
+        <div><label>City</label><input name="city" value="Quaidabad" /></div>
+        <div><label>District</label><input name="district" value="Khushab" /></div>
+        <div class="full"><button class="btn btn-navy" type="submit" style="width:100%">Create Account</button></div>
+      </form>
+    </div>
+  </main>
+  <div id="site-footer-mount"></div>
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/checkout.js"></script>
+</body>
+</html>
+

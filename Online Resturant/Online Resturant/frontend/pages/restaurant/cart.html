@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cart — Online Restaurant</title>
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <link rel="stylesheet" href="../../assets/css/landing.css" />
+  <link rel="stylesheet" href="../../assets/css/restaurant.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container site-nav">
+      <a class="brand" href="#" id="back-menu"><span class="brand-mark">OR</span> Back to menu</a>
+      <a class="btn btn-primary btn-sm" href="#" id="checkout-link">Checkout</a>
+    </div>
+  </header>
+  <main class="container" style="padding:2rem 0 4rem;">
+    <h1>Your cart</h1>
+    <div class="card mt-2">
+      <div class="card-body" id="cart-body"></div>
+    </div>
+  </main>
+  <script src="../../assets/js/api.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/cart.js"></script>
+  <script>
+    const slug = ORCart.getSlug();
+    document.getElementById("back-menu").href = `index.html?slug=${slug}`;
+    document.getElementById("checkout-link").href = `checkout.html?slug=${slug}`;
+
+    function render() {
+      const { items, subtotal } = ORCart.totals();
+      const body = document.getElementById("cart-body");
+      if (!items.length) {
+        body.innerHTML = `<div class="empty-state"><h3>Cart is empty</h3><a class="btn btn-primary" href="index.html?slug=${slug}">Browse menu</a></div>`;
+        return;
+      }
+      body.innerHTML = `
+        <table class="data">
+          <thead><tr><th>Item</th><th>Qty</th><th>Total</th><th></th></tr></thead>
+          <tbody>
+            ${items
+              .map(
+                (i) => `<tr>
+                <td>${i.name}<div class="muted" style="font-size:.8rem;">${ORUI.formatPKR(i.unit_price)} each</div></td>
+                <td><input class="form-control qty" data-id="${i.menu_item_id}" type="number" min="0" value="${i.quantity}" style="width:80px;" /></td>
+                <td>${ORUI.formatPKR(i.unit_price * i.quantity)}</td>
+                <td><button class="btn btn-ghost btn-sm remove" data-id="${i.menu_item_id}" type="button">Remove</button></td>
+              </tr>`
+              )
+              .join("")}
+          </tbody>
+        </table>
+        <div class="flex-between mt-2">
+          <strong>Subtotal</strong>
+          <strong>${ORUI.formatPKR(subtotal)}</strong>
+        </div>
+        <div class="mt-2">
+          <a class="btn btn-primary" href="checkout.html?slug=${slug}">Proceed to checkout</a>
+        </div>
+      `;
+      body.querySelectorAll(".qty").forEach((input) => {
+        input.addEventListener("change", () => {
+          ORCart.updateQty(input.dataset.id, Number(input.value));
+          render();
+        });
+      });
+      body.querySelectorAll(".remove").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          ORCart.updateQty(btn.dataset.id, 0);
+          render();
+        });
+      });
+    }
+    render();
+  </script>
+</body>
+</html>

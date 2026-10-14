@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login | MSA Digital Store</title>
+  <link rel="icon" type="image/png" href="../images/Logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/admin.css" />
+</head>
+<body>
+  <div class="login-wrap">
+    <div class="login-card">
+      <div style="display:flex;gap:0.85rem;align-items:center;margin-bottom:1.35rem">
+        <img src="../images/Logo.png" alt="MSA Technologies" style="height:48px;width:auto;object-fit:contain;background:#fff;border:1px solid #e8ecf2;border-radius:12px;padding:0.35rem 0.55rem" />
+        <div>
+          <strong style="font-family:Outfit,sans-serif;font-size:1.1rem">Admin Login</strong>
+          <div style="font-size:0.75rem;color:#667;margin-top:0.15rem">MSA Digital Store · MSA Technologies</div>
+        </div>
+      </div>
+      <div id="admin-login-msg"></div>
+      <form id="admin-login-form" style="display:grid;gap:0.85rem">
+        <div><label>Email</label><input name="email" type="email" required value="admin@msadigitalstore.pk" /></div>
+        <div><label>Password</label><input name="password" type="password" required value="admin123" /></div>
+        <button class="btn btn-teal" type="submit">Sign in</button>
+        <p style="font-size:0.75rem;color:#778;margin:0">Demo: admin@msadigitalstore.pk / admin123</p>
+        <a href="../index.html" style="font-size:0.85rem;color:#0057ff">← Back to store</a>
+      </form>
+    </div>
+  </div>
+  <script src="../js/api.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>

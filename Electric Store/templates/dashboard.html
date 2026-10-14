@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Electric Store{% endblock %}
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h2><i class="bi bi-speedometer2"></i> Dashboard</h2>
+  <p class="text-muted mb-0">Overview of your shop performance</p>
+</div>
+
+<div class="row g-3 mb-4" id="statsCards">
+  <div class="col-md-6 col-xl-3">
+    <div class="stat-card stat-primary">
+      <div class="stat-icon"><i class="bi bi-cash-stack"></i></div>
+      <div>
+        <div class="stat-label">Today Sales</div>
+        <div class="stat-value" id="todaySales">—</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 col-xl-3">
+    <div class="stat-card stat-success">
+      <div class="stat-icon"><i class="bi bi-box-seam"></i></div>
+      <div>
+        <div class="stat-label">Total Products</div>
+        <div class="stat-value" id="totalProducts">—</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 col-xl-3">
+    <div class="stat-card stat-warning">
+      <div class="stat-icon"><i class="bi bi-calendar2-check"></i></div>
+      <div>
+        <div class="stat-label">Installments Due</div>
+        <div class="stat-value" id="installmentsDue">—</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 col-xl-3">
+    <div class="stat-card stat-info">
+      <div class="stat-icon"><i class="bi bi-graph-up-arrow"></i></div>
+      <div>
+        <div class="stat-label">Monthly Profit</div>
+        <div class="stat-value" id="monthlyProfit">—</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h6 class="text-muted">Remaining Installments</h6>
+        <h3 id="remainingInstallments" class="text-warning">—</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h6 class="text-muted">Monthly Expenses</h6>
+        <h3 id="monthlyExpenses" class="text-danger">—</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h6 class="text-muted">Low Stock Alert</h6>
+        <h3 id="lowStock" class="text-danger">—</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white"><strong>Monthly Sales</strong></div>
+      <div class="card-body"><canvas id="salesChart" height="120"></canvas></div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white"><strong>Expenses Breakdown</strong></div>
+      <div class="card-body"><canvas id="expenseChart" height="200"></canvas></div>
+    </div>
+  </div>
+</div>
+<div class="row g-3 mt-1">
+  <div class="col-12">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white"><strong>Product Stock Levels</strong></div>
+      <div class="card-body"><canvas id="stockChart" height="80"></canvas></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="/static/js/dashboard.js"></script>
+{% endblock %}

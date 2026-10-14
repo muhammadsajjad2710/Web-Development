@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order detail — Online Restaurant</title>
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <link rel="stylesheet" href="../../assets/css/dashboard.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script src="../../assets/js/api.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/dashboard.js"></script>
+  <script>
+    (async function () {
+      const content = ORDashboard.renderShell({ title: "Order detail" });
+      if (!content) return;
+      const id = new URLSearchParams(location.search).get("id");
+      if (!id) {
+        content.innerHTML = `<div class="alert alert-error">Missing order id</div>`;
+        return;
+      }
+      try {
+        const order = await ORApi.get(`/orders/${id}`);
+        content.innerHTML = `
+          <div class="flex-between mb-2" style="flex-wrap:wrap;gap:1rem;">
+            <div>
+              <h2 style="margin:0;">${order.order_number}</h2>
+              <div class="mt-1">${ORUI.statusBadge(order.status)} <span class="muted">· ${order.order_type} · ${order.source}</span></div>
+            </div>
+            <div class="flex gap-1">
+              <select class="form-control" id="status" style="width:auto;">
+                ${["pending","confirmed","preparing","ready_for_pickup","out_for_delivery","delivered","completed","cancelled","rejected"]
+                  .map((s) => `<option value="${s}" ${s === order.status ? "selected" : ""}>${s.replace(/_/g," ")}</option>`)
+                  .join("")}
+              </select>
+              <button class="btn btn-primary" id="update-status" type="button">Update status</button>
+              <button class="btn btn-outline" type="button" onclick="window.print()">Print</button>
+            </div>
+          </div>
+          <div class="grid-2">
+            <section class="card">
+              <div class="card-header"><strong>Items</strong></div>
+              <div class="card-body" style="padding:0;">
+                <table class="data">
+                  <thead><tr><th>Item</th><th>Qty</th><th>Unit</th><th>Total</th></tr></thead>
+                  <tbody>
+                    ${(order.items || [])
+                      .map(
+                        (i) => `<tr>
+                        <td>${i.item_name}</td>
+                        <td>${i.quantity}</td>
+                        <td>${ORUI.formatPKR(i.unit_price)}</td>
+                        <td>${ORUI.formatPKR(i.total_price)}</td>
+                      </tr>`
+                      )
+                      .join("")}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section class="card">
+              <div class="card-header"><strong>Customer & totals</strong></div>
+              <div class="card-body">
+                <p><strong>${order.customer_name}</strong><br>${order.customer_phone}<br>${order.customer_email || ""}</p>
+                <p class="muted">${order.delivery_address || "Pickup / dine-in"}</p>
+                ${order.special_instructions ? `<p><em>${order.special_instructions}</em></p>` : ""}
+                <hr style="border:none;border-top:1px solid var(--border);margin:1rem 0;" />
+                <div class="flex-between"><span>Subtotal</span><span>${ORUI.formatPKR(order.subtotal)}</span></div>
+                <div class="flex-between"><span>Tax</span><span>${ORUI.formatPKR(order.tax_amount)}</span></div>
+                <div class="flex-between"><span>Delivery</span><span>${ORUI.formatPKR(order.delivery_fee)}</span></div>
+                <div class="flex-between mt-1"><strong>Total</strong><strong>${ORUI.formatPKR(order.total_amount)}</strong></div>
+              </div>
+            </section>
+          </div>
+        `;
+        document.getElementById("update-status").addEventListener("click", async () => {
+          try {
+            await ORApi.patch(`/orders/${id}/status`, {
+              status: document.getElementById("status").value,
+            });
+            ORUI.toast("Order status updated", "success");
+            location.reload();
+          } catch (err) {
+            ORUI.toast(err.message, "error");
+          }
+        });
+      } catch (err) {
+        content.innerHTML = `<div class="alert alert-error">${err.message}</div>`;
+      }
+    })();
+  </script>
+</body>
+</html>

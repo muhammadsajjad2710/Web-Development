@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in — Online Restaurant</title>
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <link rel="stylesheet" href="../../assets/css/auth.css" />
+</head>
+<body>
+  <div class="auth-page">
+    <aside class="auth-visual">
+      <a class="brand" href="../../index.html" style="color:#fff;">
+        <span class="brand-mark">OR</span>
+        Online Restaurant
+      </a>
+      <div>
+        <h1>Command center for modern restaurants</h1>
+        <p>Orders, menu, branches, WhatsApp, and CRM — secured with role-based access for your team.</p>
+      </div>
+      <p style="position:relative;z-index:1;opacity:.7;font-size:.85rem;">MSA Technologies</p>
+    </aside>
+    <main class="auth-panel">
+      <div class="auth-card">
+        <h2>Welcome back</h2>
+        <p class="subtitle">Sign in to your restaurant dashboard</p>
+        <div id="alert" class="alert alert-error hidden"></div>
+        <form id="login-form">
+          <div class="form-group">
+            <label class="form-label" for="email">Email</label>
+            <input class="form-control" id="email" type="email" required placeholder="owner@lahorespicehouse.pk" autocomplete="username" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <input class="form-control" id="password" type="password" required placeholder="••••••••" autocomplete="current-password" />
+          </div>
+          <div class="flex-between mb-2">
+            <span class="form-hint">Demo: owner@lahorespicehouse.pk</span>
+            <a href="forgot-password.html">Forgot password?</a>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit" id="submit-btn">Sign in</button>
+        </form>
+        <div class="auth-footer">
+          New restaurant? <a href="register.html">Start free trial</a>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="../../assets/js/api.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script>
+    if (ORApi.isAuthenticated()) {
+      window.location.href = "../dashboard/index.html";
+    }
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const alertEl = document.getElementById("alert");
+      const btn = document.getElementById("submit-btn");
+      alertEl.classList.add("hidden");
+      ORUI.setLoading(btn, true);
+      try {
+        await ORApi.login(
+          document.getElementById("email").value.trim(),
+          document.getElementById("password").value
+        );
+        ORUI.toast("Signed in successfully", "success");
+        window.location.href = "../dashboard/index.html";
+      } catch (err) {
+        alertEl.textContent = err.message;
+        alertEl.classList.remove("hidden");
+      } finally {
+        ORUI.setLoading(btn, false);
+      }
+    });
+  </script>
+</body>
+</html>

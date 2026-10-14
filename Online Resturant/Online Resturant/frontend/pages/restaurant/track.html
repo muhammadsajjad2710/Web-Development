@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Track order — Online Restaurant</title>
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <link rel="stylesheet" href="../../assets/css/landing.css" />
+  <link rel="stylesheet" href="../../assets/css/restaurant.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container site-nav">
+      <a class="brand" href="../../index.html"><span class="brand-mark">OR</span> Order tracking</a>
+    </div>
+  </header>
+  <main class="container" style="padding:2rem 0 4rem;max-width:640px;">
+    <h1>Track your order</h1>
+    <form id="track-form" class="card mt-2">
+      <div class="card-body flex gap-1" style="flex-wrap:wrap;">
+        <input class="form-control" id="order_number" placeholder="OR-XXXXXX-XXXXX" style="flex:1;" required />
+        <button class="btn btn-primary" type="submit">Track</button>
+      </div>
+    </form>
+    <div id="result" class="mt-2"></div>
+  </main>
+  <script src="../../assets/js/api.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script>
+    async function track(orderNumber) {
+      const result = document.getElementById("result");
+      result.innerHTML = `<div class="spinner"></div>`;
+      try {
+        const order = await ORApi.get(`/public/orders/track/${encodeURIComponent(orderNumber)}`, { skipAuth: true });
+        result.innerHTML = `
+          <div class="card">
+            <div class="card-body">
+              <div class="flex-between">
+                <h2 style="margin:0;">${order.order_number}</h2>
+                ${ORUI.statusBadge(order.status)}
+              </div>
+              <p class="muted">${order.customer_name} · ${order.order_type}</p>
+              <div class="flex-between"><span>Total</span><strong>${ORUI.formatPKR(order.total_amount)}</strong></div>
+              <hr style="border:none;border-top:1px solid var(--border);margin:1rem 0;" />
+              <ul style="padding-left:1.1rem;margin:0;">
+                ${(order.items || []).map((i) => `<li>${i.quantity}× ${i.item_name}</li>`).join("")}
+              </ul>
+            </div>
+          </div>`;
+      } catch (err) {
+        result.innerHTML = `<div class="alert alert-error">${err.message}</div>`;
+      }
+    }
+
+    document.getElementById("track-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      track(document.getElementById("order_number").value.trim());
+    });
+
+    const preset = new URLSearchParams(location.search).get("order");
+    if (preset) {
+      document.getElementById("order_number").value = preset;
+      track(preset);
+    }
+  </script>
+</body>
+</html>

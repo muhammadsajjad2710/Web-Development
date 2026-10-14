@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Online Restaurant</title>
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <link rel="stylesheet" href="../../assets/css/dashboard.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script src="../../assets/js/api.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/dashboard.js"></script>
+  <script>
+    (async function () {
+      const content = ORDashboard.renderShell({ title: "Dashboard" });
+      if (!content) return;
+      try {
+        const stats = await ORApi.get("/dashboard/stats");
+        content.innerHTML = `
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="label">Today's orders</div>
+              <div class="value">${stats.today_orders}</div>
+              <div class="delta">${stats.pending_orders} pending</div>
+            </div>
+            <div class="stat-card">
+              <div class="label">Today's revenue</div>
+              <div class="value">${ORUI.formatPKR(stats.today_revenue)}</div>
+              <div class="delta">Total ${ORUI.formatPKR(stats.total_revenue)}</div>
+            </div>
+            <div class="stat-card">
+              <div class="label">Customers</div>
+              <div class="value">${stats.customer_count}</div>
+              <div class="delta">${stats.repeat_customers} repeat</div>
+            </div>
+            <div class="stat-card">
+              <div class="label">Completed</div>
+              <div class="value">${stats.completed_orders}</div>
+              <div class="delta" style="color:var(--danger)">${stats.cancelled_orders} cancelled</div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <section class="card">
+              <div class="card-header">
+                <strong>Sales (last 7 days)</strong>
+              </div>
+              <div class="card-body">
+                <div class="chart-box" id="sales-chart"></div>
+              </div>
+            </section>
+            <section class="card">
+              <div class="card-header">
+                <strong>Top selling items</strong>
+              </div>
+              <div class="card-body">
+                ${
+                  stats.top_selling_items?.length
+                    ? `<div class="table-wrap"><table class="data">
+                        <thead><tr><th>Item</th><th>Qty</th><th>Revenue</th></tr></thead>
+                        <tbody>
+                          ${stats.top_selling_items
+                            .map(
+                              (i) => `<tr>
+                              <td>${i.name}</td>
+                              <td>${i.quantity}</td>
+                              <td>${ORUI.formatPKR(i.revenue)}</td>
+                            </tr>`
+                            )
+                            .join("")}
+                        </tbody>
+                      </table></div>`
+                    : `<div class="empty-state"><p>No sales data yet</p></div>`
+                }
+              </div>
+            </section>
+          </div>
+
+          <section class="card mt-2">
+            <div class="card-header">
+              <strong>Recent orders</strong>
+              <a class="btn btn-outline btn-sm" href="orders.html">View all</a>
+            </div>
+            <div class="card-body" style="padding:0;">
+              <div class="table-wrap">
+                <table class="data">
+                  <thead>
+                    <tr>
+                      <th>Order</th>
+                      <th>Customer</th>
+                      <th>Status</th>
+                      <th>Total</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${
+                      stats.recent_orders?.length
+                        ? stats.recent_orders
+                            .map(
+                              (o) => `<tr>
+                              <td><strong>${o.order_number}</strong></td>
+                              <td>${o.customer_name}</td>
+                              <td>${ORUI.statusBadge(o.status)}</td>
+                              <td>${ORUI.formatPKR(o.total_amount)}</td>
+                              <td><a href="order-detail.html?id=${o.id}">Open</a></td>
+                            </tr>`
+                            )
+                            .join("")
+                        : `<tr><td colspan="5"><div class="empty-state">No orders yet</div></td></tr>`
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+        `;
+        ORDashboard.renderSalesChart(
+          document.getElementById("sales-chart"),
+          stats.sales_by_day || []
+        );
+      } catch (err) {
+        content.innerHTML = `<div class="alert alert-error">${err.message}</div>`;
+      }
+    })();
+  </script>
+</body>
+</html>

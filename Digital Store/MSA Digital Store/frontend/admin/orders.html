@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orders | Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/admin.css" />
+</head>
+<body data-page="orders.html">
+  <div class="admin-shell" id="admin-shell">
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Orders</h2>
+        <select id="order-status-filter" style="width:auto">
+          <option value="">All statuses</option>
+          <option>Order Placed</option><option>Confirmed</option><option>Packed</option>
+          <option>Shipped</option><option>Delivered</option><option>Cancelled</option><option>Returned</option>
+        </select>
+      </div>
+      <table id="orders-table">
+        <thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>City</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  <script src="../js/api.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>

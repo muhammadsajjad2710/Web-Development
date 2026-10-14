@@ -1,0 +1,18 @@
+🚀 Product Summary — AI WhatsApp Automation for Restaurants
+
+MSA Technologies is building an AI-powered automation platform that connects directly with restaurant business accounts on WhatsApp to handle customer communication and orders automatically.
+
+The system enables restaurants to respond instantly to customer inquiries, share menus, and take orders without manual intervention. Using AI powered by OpenAI, the platform understands both Urdu and English, allowing natural conversations with customers and improving user experience.
+
+At the backend, restaurant owners can manage menus, track orders, and monitor customer interactions through a simple dashboard, while the AI agent works 24/7 to ensure no message or order is missed.
+
+This solution helps restaurants increase efficiency, reduce workload, and boost sales by turning WhatsApp into a fully automated ordering and customer support channel.
+
+⚡ One-Line Version (For Quick Pitch)
+
+👉 “An AI-powered system that automates restaurant orders and customer communication on WhatsApp.”
+
+🔥 Tagline Ideas
+“Turn WhatsApp into your smartest employee”
+“Never miss an order again”
+“AI-powered ordering for modern restaurants”

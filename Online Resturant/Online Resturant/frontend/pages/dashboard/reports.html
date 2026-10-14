@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reports — Online Restaurant</title>
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <link rel="stylesheet" href="../../assets/css/dashboard.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script src="../../assets/js/api.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/dashboard.js"></script>
+  <script>
+    (async function () {
+      const content = ORDashboard.renderShell({ title: "Reports" });
+      if (!content) return;
+      try {
+        const report = await ORApi.get("/reports/summary");
+        content.innerHTML = `
+          <div class="stats-grid">
+            <div class="stat-card"><div class="label">Revenue</div><div class="value">${ORUI.formatPKR(report.total_revenue)}</div></div>
+            <div class="stat-card"><div class="label">Orders</div><div class="value">${report.total_orders}</div></div>
+            <div class="stat-card"><div class="label">Repeat customers</div><div class="value">${report.repeat_customers}</div></div>
+            <div class="stat-card"><div class="label">Cancelled</div><div class="value">${report.cancelled_orders}</div></div>
+          </div>
+          <div class="grid-2">
+            <section class="card">
+              <div class="card-header"><strong>Daily sales</strong></div>
+              <div class="card-body"><div class="chart-box" id="chart"></div></div>
+            </section>
+            <section class="card">
+              <div class="card-header"><strong>Orders by status</strong></div>
+              <div class="card-body">
+                ${(report.orders_by_status || [])
+                  .map(
+                    (s) => `<div class="flex-between" style="padding:.5rem 0;border-bottom:1px solid var(--border);">
+                    <span>${ORUI.statusBadge(s.status)}</span><strong>${s.count}</strong>
+                  </div>`
+                  )
+                  .join("") || '<div class="empty-state">No data</div>'}
+              </div>
+            </section>
+          </div>
+        `;
+        ORDashboard.renderSalesChart(document.getElementById("chart"), report.daily_sales || []);
+      } catch (err) {
+        content.innerHTML = `<div class="alert alert-error">${err.message}</div>`;
+      }
+    })();
+  </script>
+</body>
+</html>

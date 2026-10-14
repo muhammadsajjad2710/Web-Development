@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customers — Online Restaurant</title>
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <link rel="stylesheet" href="../../assets/css/dashboard.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script src="../../assets/js/api.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/dashboard.js"></script>
+  <script>
+    (async function () {
+      const content = ORDashboard.renderShell({ title: "Customers" });
+      if (!content) return;
+      try {
+        const data = await ORApi.get("/customers");
+        content.innerHTML = `
+          <section class="card">
+            <div class="card-header"><strong>CRM customers</strong><span class="muted">${data.total} total</span></div>
+            <div class="card-body" style="padding:0;">
+              <table class="data">
+                <thead><tr><th>Name</th><th>Phone</th><th>Orders</th><th>Spent</th><th>Points</th><th>Last order</th></tr></thead>
+                <tbody>
+                  ${(data.items || [])
+                    .map(
+                      (c) => `<tr>
+                      <td><strong>${c.full_name}</strong><div class="muted" style="font-size:.8rem;">${c.city || ""}</div></td>
+                      <td>${c.phone}</td>
+                      <td>${c.total_orders}</td>
+                      <td>${ORUI.formatPKR(c.total_spent)}</td>
+                      <td>${c.loyalty_points}</td>
+                      <td>${c.last_order_at ? new Date(c.last_order_at).toLocaleString() : "—"}</td>
+                    </tr>`
+                    )
+                    .join("") || `<tr><td colspan="6"><div class="empty-state">No customers yet</div></td></tr>`}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        `;
+      } catch (err) {
+        content.innerHTML = `<div class="alert alert-error">${err.message}</div>`;
+      }
+    })();
+  </script>
+</body>
+</html>

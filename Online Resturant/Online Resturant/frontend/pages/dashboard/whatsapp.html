@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WhatsApp — Online Restaurant</title>
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <link rel="stylesheet" href="../../assets/css/dashboard.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script src="../../assets/js/api.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/dashboard.js"></script>
+  <script>
+    (async function () {
+      const content = ORDashboard.renderShell({ title: "WhatsApp" });
+      if (!content) return;
+      try {
+        const restaurant = await ORApi.get("/restaurants/me");
+        const conversations = await ORApi.get("/whatsapp/conversations");
+        content.innerHTML = `
+          <div class="alert alert-info">Sandbox mode — simulate inbound messages without Meta WhatsApp Cloud API.</div>
+          <div class="grid-2">
+            <section class="card">
+              <div class="card-header"><strong>Simulate inbound message</strong></div>
+              <div class="card-body">
+                <div class="form-group">
+                  <label class="form-label">Customer phone</label>
+                  <input class="form-control" id="phone" value="+92-300-5556677" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Message</label>
+                  <input class="form-control" id="body" value="menu" />
+                  <div class="form-hint">Try: menu, 1, address DHA Lahore, confirm, human</div>
+                </div>
+                <button class="btn btn-primary" id="send" type="button">Send to automation</button>
+              </div>
+            </section>
+            <section class="card">
+              <div class="card-header"><strong>Conversations</strong></div>
+              <div class="card-body" id="conv-list">
+                ${
+                  conversations.length
+                    ? conversations
+                        .map(
+                          (c) => `<div style="padding:.75rem 0;border-bottom:1px solid var(--border);">
+                          <strong>${c.customer_name || c.customer_phone}</strong>
+                          ${c.human_handover ? '<span class="badge badge-warning" style="background:var(--warning-soft);color:var(--warning);">Human</span>' : ""}
+                          <div class="muted" style="font-size:.85rem;">${c.status}</div>
+                        </div>`
+                        )
+                        .join("")
+                    : `<div class="empty-state"><p>No conversations yet</p></div>`
+                }
+              </div>
+            </section>
+          </div>
+          <section class="card mt-2">
+            <div class="card-header"><strong>Last bot reply</strong></div>
+            <div class="card-body" id="reply"><span class="muted">Send a message to see the automation reply.</span></div>
+          </section>
+        `;
+        document.getElementById("send").addEventListener("click", async () => {
+          try {
+            const reply = await ORApi.post("/whatsapp/inbound", {
+              restaurant_id: restaurant.id,
+              customer_phone: document.getElementById("phone").value.trim(),
+              customer_name: "WhatsApp Guest",
+              body: document.getElementById("body").value.trim(),
+            });
+            document.getElementById("reply").innerHTML = `<pre style="white-space:pre-wrap;margin:0;font-family:var(--font);">${reply.body}</pre>`;
+            ORUI.toast("Automation replied", "success");
+          } catch (err) {
+            ORUI.toast(err.message, "error");
+          }
+        });
+      } catch (err) {
+        content.innerHTML = `<div class="alert alert-error">${err.message}</div>`;
+      }
+    })();
+  </script>
+</body>
+</html>
