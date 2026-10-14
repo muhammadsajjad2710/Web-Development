@@ -1,0 +1,39 @@
+.upload-area {
+    border: 2px dashed #e2e8f0;
+    border-radius: 16px;
+    padding: 3rem 2rem;
+    text-align: center;
+    background: #f8fafc;
+    transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.upload-icon {
+    font-size: 3.5rem;
+    color: #667eea;
+    margin-bottom: 1.5rem;
+    opacity: 0.8;
+    position: static !important;
+    transform: none !important;
+    transition: none !important;
+    display: inline-block;
+    pointer-events: none;
+}
+
+.upload-icon i {
+    position: static !important;
+    transform: none !important;
+    transition: none !important;
+    display: inline-block;
+    pointer-events: none;
+}
+
+/* Prevent any transitions on hover */
+.upload-area:hover .upload-icon,
+.upload-area:hover .upload-icon i,
+.upload-area.dragover .upload-icon,
+.upload-area.dragover .upload-icon i {
+    transform: none !important;
+    transition: none !important;
+}

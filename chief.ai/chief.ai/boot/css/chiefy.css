@@ -1,0 +1,38 @@
+.bg-chief {
+    background-color: #fff !important;
+}
+
+.chief-logo {
+    height: 30px;
+}
+
+.chief-logo-large {
+    width: 70%;
+}
+
+.chief-logo-small {
+    width: 10%;
+    margin: 0px;
+    padding: 0px;
+}
+
+.search-main {
+    width: 100%
+}
+
+body {
+    background-color: #fff;
+}
+
+.bottomspace {
+    margin-bottom: 100px;
+}
+
+.databg {
+    background-color: #efff002b;
+    color: red;
+}
+
+.bottomspace2 {
+    margin-bottom: 30px;
+}
